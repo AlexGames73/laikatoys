@@ -4,8 +4,9 @@
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1>Welcome!</h1>
-
-<p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
+<h1 th:text="${nameUser}"></h1>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
 </body>
 </html>
