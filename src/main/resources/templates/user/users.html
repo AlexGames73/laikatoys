@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Users</title>
+</head>
+<body>
+<div class="row">
+    <th:block th:each="user : ${userList}">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${user.getUsername()} + ${user.getFullname()}"></h5>
+                    <p class="card-text" th:text="${user.getPassword()}"></p>
+                    <a th:href="${user.getId()}">info</a>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</div>
+</body>
+</html>
