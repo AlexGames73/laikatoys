@@ -3,11 +3,32 @@
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Spring Security Example</title>
+	<link rel="stylesheet" href="../public/css/main.css">
 </head>
 <body>
-<h1 th:text="${nameUser}"></h1>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
+	<div id="back_top_panel">
+		<div id="top_panel">
+			<div id="top_panel_logo">
+			</div>
+			<div id="top_panel_buttons">
+			Кнопка1  Кнопка2  Кнопка3
+			</div>
+			<div id="top_panel_trashcan">
+			Логин и корзина
+			</div>
+			<h1 style="margin-block-start : 0px; margin-block-end : 0px" th:text="${nameUser}"></h1>
+			<form th:action="@{/logout}" method="post">
+				<input type="submit" value="Sign Out"/>
+			</form>
+		</div>
+	</div>
+	<div id="back_main_body">
+	Контент страницы
+	</div>
+	<div id="back_footer">
+		<div id="footer">
+		Инфо
+		</div>
+	</div>
 </body>
 </html>
