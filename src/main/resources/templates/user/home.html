@@ -5,7 +5,7 @@
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1 th:text="${nameUser}"></h1>
+<h1 th:text="${user.getUsername()}"></h1>
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>
