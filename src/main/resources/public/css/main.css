@@ -1,0 +1,74 @@
+:root
+{
+	--top_panel_height : 50px;
+}
+
+body
+{
+	margin : 0px;
+}
+
+#back_top_panel
+{
+	position : fixed;
+	height : var(--top_panel_height);
+	width : 100%;
+	padding : 0px;
+	background-color : #f00;
+}
+
+#top_panel
+{
+	width : 1000px;
+	height : 100%;
+	margin : 0px auto;
+	background-color : #ff0;
+}
+
+#top_panel_logo
+{
+	width : var(--top_panel_height);
+	height : var(--top_panel_height);
+	background-color : #0ff;
+	float : left;
+}
+
+#top_panel_buttons
+{
+	height : var(--top_panel_height);
+	width : auto;
+	float : left;
+	background-color : #f0f
+}
+
+#top_panel_trashcan
+{
+	height : var(--top_panel_height);
+	width : auto;
+	float : right;
+	background-color : #00f;
+}
+
+#back_main_body
+{
+	width : 1000px;
+	height : 1000px;
+	margin : 0px auto;
+	padding-top : var(--top_panel_height);
+	background-color : #0f0;
+}
+
+#back_footer
+{
+	height : 100px;
+	width : auto;
+	background-color : #000;
+}
+
+#footer
+{
+	height : 100px;
+	width : 1000px;
+	margin : 0px auto;
+	color : #fff;
+}
