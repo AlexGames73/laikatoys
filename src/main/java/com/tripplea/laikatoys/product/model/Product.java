@@ -1,9 +1,10 @@
 package com.tripplea.laikatoys.product.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.tripplea.laikatoys.API.DBFile.model.DBFile;
+
+import javax.persistence.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Product {
@@ -15,17 +16,21 @@ public class Product {
     private String type;
     private String description;
     private Integer price;
-    private String sourceImage;
+
+    @ElementCollection(targetClass = DBFile.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<DBFile> images;
 
     public Product() {
     }
 
-    public Product(String name, String type, String description, Integer price, String sourceImage) {
+    public Product(String name, String type, String description, Integer price, Set<DBFile> images) {
         this.name = name;
         this.type = type;
         this.description = description;
         this.price = price;
-        this.sourceImage = sourceImage;
+        this.images = images;
     }
 
     public Integer getId() {
@@ -68,11 +73,19 @@ public class Product {
         this.price = price;
     }
 
-    public String getSourceImage() {
-        return sourceImage;
+    public Set<DBFile> getImages() {
+        return images;
     }
 
-    public void setSourceImage(String sourceImage) {
-        this.sourceImage = sourceImage;
+    public void setImages(Set<DBFile> images) {
+        this.images = images;
+    }
+
+    public ProductDto toDto() {
+        List<String> uris = new LinkedList<>();
+        for (DBFile file : images) {
+            uris.add("/downloadFile/" + file.getId());
+        }
+        return new ProductDto(name, type, description, price, uris);
     }
 }

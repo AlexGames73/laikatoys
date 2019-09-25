@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Create product</title>
+</head>
+<body>
+    <div sec:authorize="isAuthenticated()">
+        <form method="post" th:action="'/catalog/create?'+${_csrf.parameterName}+'='+${_csrf.token}"
+              enctype="multipart/form-data">
+            <label for="name">Name</label>
+            <input id="name" type="text" name="name" />
+            <label for="type">Type</label>
+            <input id="type" type="text" name="type" />
+            <label for="description">Description</label>
+            <input id="description" type="text" name="description" />
+            <label for="price">Price</label>
+            <input id="price" type="text" name="price" />
+            <label for="files">Images</label>
+            <input id="files" type="file" name="files" multiple required accept=".jpg, .jpeg, .png"/>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+        Закачивать файлы могут только авторихованные пользователи
+    </div>
+</body>
+</html>
