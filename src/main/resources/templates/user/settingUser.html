@@ -7,13 +7,22 @@
     <title>Settings</title>
 </head>
 <body>
-<form>
-    <div class="input-group mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-default">Default</span>
-        </div>
-        <input th:value="${user.getUsername()}" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+<form method="post" th:action="@{settingUser}" th:object="${user}">
+    <div class="form-group">
+        <label>FirstName</label>
+        <input class="form-control" type="text" th:field="*{firstName}"/>
     </div>
+    <div>
+        <th:block th:each="role : ${roles}">
+            <label th:name="${role.toString()}">
+                <input type="checkbox" th:checked="${user.roles.contains(role)}" th:name="${role}" th:value="${role}">
+            </label>
+        </th:block>
+    </div>
+    <input type="hidden" th:field="*{password}">
+    <input type="hidden" th:field="*{id}">
+    <input type="hidden" th:field="*{username}"/>
+    <input type="hidden" th:field="*{roles}"/>
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
 </body>
