@@ -41,7 +41,6 @@ public class UserController {
     }
 
     @PostMapping(value = "/settingUser")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public String userEditChange(@ModelAttribute User user, @RequestParam Map<String, String> form, Model model){
         Set<String> roles = Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
         user.getRoles().clear();
@@ -61,6 +60,13 @@ public class UserController {
         List<User> users = userRepo.findAll();
         model.addAttribute(users);
         return "user/users";
+    }
+
+    @GetMapping("/setting")
+    public String mySetting(@AuthenticationPrincipal User user, Model model){
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        return "/user/settingUser";
     }
 
 }

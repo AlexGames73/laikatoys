@@ -8,21 +8,38 @@
 </head>
 <body>
 <form method="post" th:action="@{settingUser}" th:object="${user}">
+    <input name="id" hidden="true" th:field="*{id}">
+    <input name="username" hidden="true" th:field="*{username}"/>
+    <input name="password" hidden="true" th:field="*{password}">
+    <input name="roles" hidden="true" th:field="*{roles}"/>
     <div class="form-group">
-        <label>FirstName</label>
+        <label>First Name</label>
         <input class="form-control" type="text" th:field="*{firstName}"/>
     </div>
-    <div>
-        <th:block th:each="role : ${roles}">
-            <label th:name="${role.toString()}">
-                <input type="checkbox" th:checked="${user.roles.contains(role)}" th:name="${role}" th:value="${role}">
-            </label>
-        </th:block>
+    <div class="form-group">
+        <label>Last Name</label>
+        <input class="form-control" type="text" th:field="*{lastName}"/>
     </div>
-    <input type="hidden" th:field="*{password}">
-    <input type="hidden" th:field="*{id}">
-    <input type="hidden" th:field="*{username}"/>
-    <input type="hidden" th:field="*{roles}"/>
+    <div class="form-group">
+        <label>E-Mail</label>
+        <input class="form-control" type="text" th:field="*{email}"/>
+    </div>
+    <div class="form-group">
+        <label>Phone</label>
+        <input class="form-control" type="text" th:field="*{phone}"/>
+    </div>
+    <div class="form-group">
+        <label>Address</label>
+        <input class="form-control" type="text" th:field="*{address}"/>
+    </div>
+    <ul th:if="${user.isAdmin()}">
+        <th:block th:each="role : ${roles}">
+            <li th:value="${role.toString()}">
+                <label th:text="${role.toString()}">ROLE</label>
+                <input type="checkbox" th:checked="${user.roles.contains(role)}" th:name="${role}" th:value="${role}">
+            </li>
+        </th:block>
+    </ul>
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
 </body>

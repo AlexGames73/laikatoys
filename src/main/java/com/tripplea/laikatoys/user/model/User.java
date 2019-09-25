@@ -32,6 +32,8 @@ public class User implements UserDetails {
     private String address;
     private String phone;
 
+
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -47,6 +49,10 @@ public class User implements UserDetails {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isAdmin(){
+        return roles.contains(Role.ADMIN);
     }
 
     @Override
