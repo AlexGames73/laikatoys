@@ -7,13 +7,39 @@
     <title>Settings</title>
 </head>
 <body>
-<form>
-    <div class="input-group mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-default">Default</span>
-        </div>
-        <input th:value="${user.getUsername()}" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+<form method="post" th:action="@{settingUser}" th:object="${user}">
+    <input name="id" hidden="true" th:field="*{id}">
+    <input name="username" hidden="true" th:field="*{username}"/>
+    <input name="password" hidden="true" th:field="*{password}">
+    <input name="roles" hidden="true" th:field="*{roles}"/>
+    <div class="form-group">
+        <label>First Name</label>
+        <input class="form-control" type="text" th:field="*{firstName}"/>
     </div>
+    <div class="form-group">
+        <label>Last Name</label>
+        <input class="form-control" type="text" th:field="*{lastName}"/>
+    </div>
+    <div class="form-group">
+        <label>E-Mail</label>
+        <input class="form-control" type="text" th:field="*{email}"/>
+    </div>
+    <div class="form-group">
+        <label>Phone</label>
+        <input class="form-control" type="text" th:field="*{phone}"/>
+    </div>
+    <div class="form-group">
+        <label>Address</label>
+        <input class="form-control" type="text" th:field="*{address}"/>
+    </div>
+    <ul th:if="${user.isAdmin()}">
+        <th:block th:each="role : ${roles}">
+            <li th:value="${role.toString()}">
+                <label th:text="${role.toString()}">ROLE</label>
+                <input type="checkbox" th:checked="${user.roles.contains(role)}" th:name="${role}" th:value="${role}">
+            </li>
+        </th:block>
+    </ul>
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
 </body>

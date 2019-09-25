@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -15,14 +16,23 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @NotNull
     @Column(name="username", unique=true)
     private String username;
+    @NotNull
     private String password;
 
+    @Column(name="email", unique=true)
     private String email;
-    private String fullname;
+    private String FirstName;
+    private String LastName;
+
+
+
     private String address;
     private String phone;
+
+
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -39,6 +49,10 @@ public class User implements UserDetails {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isAdmin(){
+        return roles.contains(Role.ADMIN);
     }
 
     @Override
@@ -94,14 +108,6 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -116,5 +122,21 @@ public class User implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getFirstName() {
+        return FirstName;
+    }
+
+    public void setFirstName(String firstName) {
+        FirstName = firstName;
+    }
+
+    public String getLastName() {
+        return LastName;
+    }
+
+    public void setLastName(String lastName) {
+        LastName = lastName;
     }
 }

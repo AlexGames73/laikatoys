@@ -1,21 +1,18 @@
 package com.tripplea.laikatoys.user.controller;
 
+import com.tripplea.laikatoys.user.model.Role;
 import com.tripplea.laikatoys.user.model.User;
 import com.tripplea.laikatoys.user.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import javax.validation.Valid;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -30,21 +27,46 @@ public class UserController {
     }
     @GetMapping("/home")
     public String home(Map<String, Object> model, @AuthenticationPrincipal User authUser) {
-        model.put("nameUser", authUser.getUsername());
-        return "home";
+        model.put("user", authUser);
+        return "user/home";
     }
 
     @GetMapping("{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String userEditShow(@PathVariable Long userId, Model model){
         User user = userRepo.findById(userId.intValue());
         model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        return "user/settingUser";
+    }
+
+    @PostMapping(value = "/settingUser")
+    public String userEditChange(@ModelAttribute User user, @RequestParam Map<String, String> form, Model model){
+        Set<String> roles = Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
+        user.getRoles().clear();
+        for (String key : form.keySet()){
+            if (roles.contains(key))
+                user.getRoles().add(Role.valueOf(key));
+        }
+        userRepo.save(user);
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
         return "user/settingUser";
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String showUsers(Model model) {
         List<User> users = userRepo.findAll();
         model.addAttribute(users);
         return "user/users";
     }
+
+    @GetMapping("/setting")
+    public String mySetting(@AuthenticationPrincipal User user, Model model){
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        return "/user/settingUser";
+    }
+
 }
