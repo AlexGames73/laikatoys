@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Загрузка файлов</title>
+</head>
+<body>
+<div sec:authorize="isAuthenticated()">
+    <form method="post" th:action="'/uploadMultipleFiles?'+${_csrf.parameterName}+'='+${_csrf.token}"
+          enctype="multipart/form-data">
+        <input id="multipleFileUploadInput" type="file" name="files" class="file-input" multiple required accept=".jpg, .jpeg, .png" size="100000"/>
+        <button type="submit" class="primary submit-btn">Submit</button>
+    </form>
+</div>
+<div sec:authorize="!isAuthenticated()">
+    Закачивать файлы могут только авторихованные пользователи
+</div>
+</body>
+</html>

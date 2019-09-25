@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello World!</title>
+</head>
+<body>
+    <div sec:authorize="isAuthenticated()">
+        <p th:text="${currentUser.getId()}"></p>
+    </div>
+    <th:block th:each="product : ${catalogDto}">
+        <div style="background-color: #878787; max-width: 1000px; text-align: center; margin-left: auto; margin-right: auto">
+            <h2 th:text="${product.getType()}"></h2>
+            <div style="text-align: left">
+                <div style="display: inline-block">
+                    <div style="height: 300px; width: 300px; margin: 1rem; display: inline-block">
+                        <th:block th:each="img : ${product.getImagesUri()}">
+                            <img th:src="${img}" alt="Avatar" style="height: 100%; width: 100%; object-fit: cover; display: inline-block"/>
+                        </th:block>
+                    </div>
+                    <h1 th:text="${product.getName()}" style="margin: 1rem; display: inline-block"></h1>
+                </div>
+                <div style="display: inline-block; text-align: right">
+                    <h1 th:text="${product.getPrice()}"></h1>
+                </div>
+            </div>
+            <h2 th:text="${product.getDescription()}"></h2>
+        </div>
+    </th:block>
+</body>
+</html>
