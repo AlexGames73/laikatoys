@@ -24,6 +24,9 @@ public class User implements UserDetails {
 
     @Column(name="email", unique=true)
     private String email;
+    private String activationCode;
+
+
     private String FirstName;
     private String LastName;
 
@@ -138,5 +141,13 @@ public class User implements UserDetails {
 
     public void setLastName(String lastName) {
         LastName = lastName;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 }
