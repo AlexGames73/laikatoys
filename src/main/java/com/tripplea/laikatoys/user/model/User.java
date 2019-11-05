@@ -1,5 +1,6 @@
 package com.tripplea.laikatoys.user.model;
 
+import com.tripplea.laikatoys.Cart.model.Cart;
 import com.tripplea.laikatoys.user.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +12,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name = "usr")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,6 +39,10 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
 
     public Integer getId() {
         return id;
@@ -138,5 +143,13 @@ public class User implements UserDetails {
 
     public void setLastName(String lastName) {
         LastName = lastName;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 }

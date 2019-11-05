@@ -3,7 +3,10 @@ package com.tripplea.laikatoys.catalog.service;
 import com.tripplea.laikatoys.API.DBFile.model.DBFile;
 import com.tripplea.laikatoys.API.DBFile.service.DBFileStorageService;
 import com.tripplea.laikatoys.product.model.Product;
+import com.tripplea.laikatoys.product.model.ProductCreateDto;
+import com.tripplea.laikatoys.product.model.ProductDto;
 import com.tripplea.laikatoys.product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,9 +27,9 @@ public class CatalogService {
         this.dbFileStorageService = dbFileStorageService;
     }
 
-    public List<Product> getProducts(int page, int countOnPage) {
+    public Page<Product> getProducts(int page, int countOnPage) {
         Pageable pageable = PageRequest.of(page, countOnPage, Sort.by("id"));
-        return productRepository.findAll(pageable).getContent();
+        return productRepository.findAll(pageable);
     }
 
     public List<Product> getProductsByType(int page, int countOnPage, String type) {
@@ -39,20 +42,10 @@ public class CatalogService {
         return productRepository.findAllByNameIgnoreCaseIsContaining(query, pageable);
     }
 
-    public void createProduct(
-            String name,
-            String type,
-            String description,
-            Integer price,
-            MultipartFile[] files
-    ) {
-        Product product = new Product();
-        product.setName(name);
-        product.setType(type);
-        product.setDescription(description);
-        product.setPrice(price);
+    public void createProduct(ProductCreateDto productCreateDto) {
+        Product product = new Product(productCreateDto);
         Set<DBFile> dbFiles = new HashSet<>();
-        for (MultipartFile file : files) {
+        for (MultipartFile file : productCreateDto.getFiles()) {
             DBFile dbFile = dbFileStorageService.storeFile(file);
             dbFiles.add(dbFile);
         }

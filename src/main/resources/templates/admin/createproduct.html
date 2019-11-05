@@ -7,18 +7,18 @@
 </head>
 <body>
     <div sec:authorize="isAuthenticated()">
-        <form method="post" th:action="'/catalog/create?'+${_csrf.parameterName}+'='+${_csrf.token}"
+        <form method="post" action="/catalog/create" th:object="${productCreateDto}"
               enctype="multipart/form-data">
             <label for="name">Name</label>
-            <input id="name" type="text" name="name" />
+            <input id="name" type="text" th:field="*{name}" />
             <label for="type">Type</label>
-            <input id="type" type="text" name="type" />
+            <input id="type" type="text" th:field="*{type}" />
             <label for="description">Description</label>
-            <input id="description" type="text" name="description" />
+            <input id="description" type="text" th:field="*{description}" />
             <label for="price">Price</label>
-            <input id="price" type="text" name="price" />
+            <input id="price" type="text" th:field="*{price}" />
             <label for="files">Images</label>
-            <input id="files" type="file" name="files" multiple required accept=".jpg, .jpeg, .png"/>
+            <input id="files" type="file" th:field="*{files}" multiple required accept=".jpg, .jpeg, .png"/>
             <button type="submit">Submit</button>
         </form>
     </div>

@@ -1,31 +1,89 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="ru">
 <head>
     <title>Hello World!</title>
+    <script src="webjars/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-    <div sec:authorize="isAuthenticated()">
-        <p th:text="${currentUser.getId()}"></p>
+    <div class="cart">
+        <p class="cart_totalCount">@</p>
+        <p class="cart_totalSum">@</p>
+        <a href="/user" type="button">Открыть корзину</a>
     </div>
-    <th:block th:each="product : ${catalogDto}">
-        <div style="background-color: #878787; max-width: 1000px; text-align: center; margin-left: auto; margin-right: auto">
-            <h2 th:text="${product.getType()}"></h2>
+    <th:block th:each="product, i : ${productDtos}">
+        <div style="background-color: #878787; max-width: 1000px; text-align: center; margin-left: auto; margin-right: auto" th:object="${product}">
+            <h2 th:text="*{type}"></h2>
             <div style="text-align: left">
                 <div style="display: inline-block">
                     <div style="height: 300px; width: 300px; margin: 1rem; display: inline-block">
-                        <th:block th:each="img : ${product.getImagesUri()}">
-                            <img th:src="${img}" alt="Avatar" style="height: 100%; width: 100%; object-fit: cover; display: inline-block"/>
+                        <th:block th:each="img : *{imagesUris}">
+                            <img src="#" th:src="${img}" alt="Avatar" style="height: 100%; width: 100%; object-fit: cover; display: inline-block"/>
                         </th:block>
                     </div>
-                    <h1 th:text="${product.getName()}" style="margin: 1rem; display: inline-block"></h1>
+                    <h1 th:text="*{name}" style="margin: 1rem; display: inline-block"></h1>
                 </div>
                 <div style="display: inline-block; text-align: right">
-                    <h1 th:text="${product.getPrice()}"></h1>
+                    <h1 th:text="*{price}"></h1>
                 </div>
             </div>
-            <h2 th:text="${product.getDescription()}"></h2>
+            <h2 th:text="*{description}"></h2>
+            <button th:onclick="addProduct([[${i.index}]])">Add to cart</button>
         </div>
     </th:block>
+    <div th:each="page : ${#numbers.sequence(0, countPages - 1)}">
+        <button th:text="${page}" style="display: inline-block" th:onclick="window.location.href=[[@{'/catalog?p='+${page}}]]"></button>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                'type': 'GET',
+                'url': '/cart',
+                'success': function (s) {
+                    updateCart(s);
+                }
+            });
+        });
+        function updateCart(cart) {
+            let count = 0;
+            let price = 0;
+            for (let i = 0; i < cart.productCounts.length; i++) {
+                count += cart.productCounts[i];
+                price += cart.productNames[i].price * cart.productCounts[i];
+            }
+            $('.cart_totalCount').text(count);
+            $('.cart_totalSum').text(price);
+        }
+        function addProduct(productId) {
+            let productDtos = [[${productDtos}]];
+            let data = {
+                productDto: productDtos[productId],
+                count: 1
+            };
+            let options = {
+                method: 'POST',
+                body: JSON.stringify(data),
+                credentials: "same-origin"
+            };
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                'type': 'POST',
+                'url': '/cart/add',
+                'data': JSON.stringify(data),
+                'dataType': 'json',
+                'success': function (s) {
+                    updateCart(s);
+                }
+            });
+        }
+    </script>
 </body>
 </html>

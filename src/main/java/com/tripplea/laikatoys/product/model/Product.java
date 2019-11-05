@@ -25,6 +25,17 @@ public class Product {
     public Product() {
     }
 
+    public Product(ProductCreateDto productCreateDto) {
+        this(productCreateDto.getName(), productCreateDto.getType(), productCreateDto.getDescription(), productCreateDto.getPrice());
+    }
+
+    private Product(String name, String type, String description, Integer price) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.price = price;
+    }
+
     public Product(String name, String type, String description, Integer price, Set<DBFile> images) {
         this.name = name;
         this.type = type;
@@ -81,11 +92,11 @@ public class Product {
         this.images = images;
     }
 
-    public ProductDto toDto() {
+    public List<String> getUris() {
         List<String> uris = new LinkedList<>();
         for (DBFile file : images) {
             uris.add("/downloadFile/" + file.getId());
         }
-        return new ProductDto(name, type, description, price, uris);
+        return uris;
     }
 }

@@ -32,11 +32,17 @@ public class UserController {
     }
 
     @GetMapping("{userId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String userEditShow(@PathVariable Long userId, Model model){
-        User user = userRepo.findById(userId.intValue());
-        model.addAttribute("user", user);
-        model.addAttribute("roles", Role.values());
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public String userEditShow(@PathVariable Integer userId, Model model, @AuthenticationPrincipal User authUser){
+        if (authUser.getId().equals(userId) || authUser.isAdmin()) {
+            User user = userRepo.findById(userId);
+            model.addAttribute("user", user);
+            model.addAttribute("roles", Role.values());
+            model.addAttribute("isError", false);
+        } else {
+            model.addAttribute("error", "Access denied");
+            model.addAttribute("isError", true);
+        }
         return "user/settingUser";
     }
 
@@ -60,13 +66,6 @@ public class UserController {
         List<User> users = userRepo.findAll();
         model.addAttribute(users);
         return "user/users";
-    }
-
-    @GetMapping("/setting")
-    public String mySetting(@AuthenticationPrincipal User user, Model model){
-        model.addAttribute("user", user);
-        model.addAttribute("roles", Role.values());
-        return "/user/settingUser";
     }
 
 }
