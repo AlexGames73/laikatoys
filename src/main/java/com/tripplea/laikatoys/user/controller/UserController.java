@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/settingUser")
-    public String userEditChange(@ModelAttribute User user, @RequestParam Map<String, String> form, Model model){
+    public String userEditChange(@ModelAttribute User user, @RequestParam Map<String, String> form, Model model, @AuthenticationPrincipal User authUser){
         Set<String> roles = Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
         user.getRoles().clear();
         for (String key : form.keySet()){
@@ -57,6 +57,7 @@ public class UserController {
         userRepo.save(user);
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
+        model.addAttribute("authUser", authUser);
         return "user/settingUser";
     }
 
@@ -66,6 +67,14 @@ public class UserController {
         List<User> users = userRepo.findAll();
         model.addAttribute(users);
         return "user/users";
+    }
+
+    @GetMapping("/setting")
+    public String mySetting(@AuthenticationPrincipal User user, Model model){
+        model.addAttribute("user", user);
+        model.addAttribute("authUser",user);
+        model.addAttribute("roles", Role.values());
+        return "/user/settingUser";
     }
 
 }
