@@ -32,7 +32,7 @@
         <label>Address</label>
         <input class="form-control" type="text" th:field="*{address}"/>
     </div>
-    <ul th:if="${user.isAdmin()}">
+    <ul th:if="${authUser.isAdmin()}">
         <th:block th:each="role : ${roles}">
             <li th:value="${role.toString()}">
                 <label th:text="${role.toString()}">ROLE</label>
