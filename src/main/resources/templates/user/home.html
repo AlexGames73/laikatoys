@@ -1,13 +1,34 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="ru"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/default}">
 <head>
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1 th:text="${user.getUsername()}"></h1>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
+    <div class="container" layout:fragment="content">
+
+        <br>
+        <div class="col-md-6 offset-md-3 centered" style="background-color: #4f4f4f">
+            <h3 th:text="${user.getUsername()}"></h3>
+            <h4 th:text="'Ваша почта: ' + ${user.getEmail()}"></h4>
+            <h2>Личные данные</h2>
+            <h4 th:text="'Ваше имя: ' + ${user.getFirstName()}"></h4>
+            <h4 th:text="'Ваша фамилия: ' + ${user.getLastName()}"></h4>
+            <h4 th:text="'Адрес: ' + ${user.getAddress()}"></h4>
+            <h4 th:text="'Телефон: ' + ${user.getPhone()}"></h4>
+        </div>
+        <br>
+        <div class="offset-md-9">
+            <div class="row">
+                <a class="btn btn-success col-md-4" th:href="'http://localhost:8080/user/' + ${user.getId()}">Изменить</a>
+                <form th:action="@{/logout}" class="offset-md-1" method="post">
+                    <input class="btn btn-danger" type="submit" value="Выйти"/>
+                </form>
+            </div>
+        </div>
+        <br>
+    </div>
 </body>
 </html>

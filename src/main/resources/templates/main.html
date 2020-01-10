@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="headerWordsImage" style="height: 200px;">
+                <h2 class="col-md-4 offset-md-4 text-center" style="letter-spacing:5px; margin-top:40px; font-weight: bolder; font-size: 50px; color: white">Laika Toys</h2>
+                <br>
+                <h5 class="col-md-4 offset-md-4 text-center" style="letter-spacing:3px; font-weight: bold; font-size: 20px; color: white">деревянные игрушки</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active peopleCarouselImg">
+                        <img src="https://i.pinimg.com/originals/22/3d/78/223d78feda667f7fbf07a28585a440dd.jpg" class="d-block w-100" alt="...">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5 style="color: black; font-size: 40px; font-weight: bold">Турбо машинка</h5>
+                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item peopleCarouselImg">
+                        <img src="https://cdnb.artstation.com/p/assets/images/images/007/303/551/large/alexander-schmid-fav-toy-v2.jpg?1505192823" class="d-block w-100" alt="...">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5 style="color: black; font-size: 40px; font-weight: bold">Паравозик</h5>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item peopleCarouselImg">
+                        <img src="https://i.pinimg.com/originals/9a/8c/47/9a8c47f6951abc7fd290af2c2da3c2ad.jpg" class="d-block w-100" alt="...">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5 style="color: black; font-size: 40px; font-weight: bold">Инетересные модели</h5>
+                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5" id="headerImage"></div>
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <div class="row">
+                    <br>
+                    <h1 style="color: black">Laik Toys - магазин деревянных игрушек</h1>
+                    <p>
+                        Безопасные деревянные игрушки «Laika Toys» для детей любых возрастов.
+                        Наши игрушки знакомят детей с геометрическими формами, развивают пространственное мышление, воображение и логику, совершенствуют моторику рук, дарят радость от решения игровых задач.
+                        Наборы «Laika Toys» созданы исключительно из качественного российского сырья. Тщательно обработанная натуральная древесина без покрытий и пропиток делает игру с кубиками абсолютно безопасной.
+                    </p>
+                    <a href="/catalog" class="btn btn-warning">Перейти в каталог</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid threeImages">
+        <br>
+        <div class="container">
+            <div class="row centered">
+                <div class="col-md-4">
+                    <i class="fas fa-home"></i>
+                    <h4>Долговечность</h4>
+                    <p>Игрушки не требуют особеного ухода, поэтому могут прослужить долго и передаваться из поколения в поколение</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-tree"></i>
+                    <h4>Экологичные игрушки</h4>
+                    <p>Игрушки производятся из ценных пород древесины без применения лаков и красок</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-baby"></i>
+                    <h4>Дети всех возрастов любят</h4>
+                    <p>Деревянные игрушки открывают простор для экспериментов и развивают фантазию ребенка</p>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div class="container">
+        <br>
+        <h1 style="color:black; font-size: 50px; letter-spacing: 3px; font-weight: bold" class="centered">Почему наши игрушки</h1>
+        <br>
+        <div class="row">
+            <div class="col-md-3 text-center centered">
+                <h5 style="color:black; font-weight: bold">Современные технологии</h5>
+                <p>Современные технологии обработки древесины позволяют получить безопасную и экологичную продукцию</p>
+                <h5 style="color:black; font-weight: bold">Натуральные материалы</h5>
+                <p>Игрушки производятся из ценных пород древесины без применения лаков и красок</p>
+                <h5 style="color:black; font-weight: bold">Долговечность</h5>
+                <p>Игрушки не требуют особеного ухода, поэтому могут прослужить долго и передаваться из поколения в поколение</p>
+            </div>
+            <div class="col-md-6">
+                <div id="headerImage3"></div>
+            </div>
+            <div class="col-md-3 text-center centered">
+                <h5 style="color:black; font-weight: bold">Современные технологии</h5>
+                <p>Современные технологии обработки древесины позволяют получить безопасную и экологичную продукцию</p>
+                <h5 style="color:black; font-weight: bold">Натуральные материалы</h5>
+                <p>Игрушки производятся из ценных пород древесины без применения лаков и красок</p>
+                <h5 style="color:black; font-weight: bold">Долговечность</h5>
+                <p>Игрушки не требуют особеного ухода, поэтому могут прослужить долго и передаваться из поколения в поколение</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

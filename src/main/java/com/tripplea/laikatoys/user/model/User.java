@@ -1,6 +1,5 @@
 package com.tripplea.laikatoys.user.model;
 
-import com.tripplea.laikatoys.Cart.model.Cart;
 import com.tripplea.laikatoys.user.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,7 +44,6 @@ public class User implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
-    private Cart cart;
 
     public Integer getId() {
         return id;
@@ -156,11 +154,4 @@ public class User implements UserDetails {
         this.activationCode = activationCode;
     }
 
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
 }

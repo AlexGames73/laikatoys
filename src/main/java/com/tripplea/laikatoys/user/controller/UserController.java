@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,8 @@ public class UserController {
     }
     @GetMapping("/home")
     public String home(Map<String, Object> model, @AuthenticationPrincipal User authUser) {
-        model.put("user", authUser);
+        User curUser = userRepo.findById(authUser.getId());
+        model.put("user", curUser);
         return "user/home";
     }
 
@@ -58,6 +58,7 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
         model.addAttribute("authUser", authUser);
+        model.addAttribute("isError", false);
         return "user/settingUser";
     }
 

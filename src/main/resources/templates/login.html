@@ -1,16 +1,47 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/default}">
 <head>
-    <title>Spring Security Example </title>
+    <title>Login</title>
 </head>
 <body>
-<p th:text="${message}"></p>
-    <form th:action="@{/login}" method="post">
-        <div><label> User Name : <input type="text" name="username"/> </label></div>
-        <div><label> Password: <input type="password" name="password"/> </label></div>
-        <div><input type="submit" value="Sign In"/></div>
-    </form>
-<a href="/registration">Add new user</a>
+
+<div class="container" layout:fragment="content">
+    <br><br>
+    <div class="row">
+        <div class="col-md-5 rounded" style="background-color: #7ccbc8">
+            <br>
+            <h3>Новый пользователь</h3>
+            <p>Если у вас нет аккаунта, создайте нового пользователя для оформления покупок.</p>
+            <a type="button" class="btn btn-primary" href="/registration">Создать аккаунт</a>
+            <br><br>
+        </div>
+        <div class="col-md-3"></div>
+        <br>
+        <div class="col-md-4 rounded" style="background-color: #7ccbc8">
+            <br>
+            <h3>Зарегестрированный пользователь</h3>
+            <br>
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Логин</label>
+                    <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Введите логин...">
+                    <small id="emailHelp" class="form-text">Логин, который вы указывали при регистрации.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Пароль</label>
+                    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Введите пароль...">
+                </div>
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </form>
+            <br>
+        </div>
+        <br>
+    </div>
+    <br><br><br>
+</div>
 </body>
 </html>

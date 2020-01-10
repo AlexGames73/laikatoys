@@ -1,4 +1,5 @@
-package com.tripplea.laikatoys.Cart.model;
+package com.tripplea.laikatoys.Cart.Model;
+
 
 import com.tripplea.laikatoys.product.model.ProductDto;
 

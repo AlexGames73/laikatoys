@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <div class="container" layout:fragment="content">
+        <br>
+        <h3 style="color: black" class="test">Корзина</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Товары</th>
+                <th scope="col">Цена</th>
+                <th scope="col">Количество</th>
+                <th scope="col">Сумма</th>
+                <th scopt="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="product, i : ${products}">
+                <tr class="cart" th:object="${product}">
+                    <td>
+                        <div class="row">
+                            <div style="width: 50px; height: 50px;">
+                                <img style="width: 100%; height: 100%; object-fit: cover;" class="d-block w-100" th:src="${product.getProductDto().getImagesUris()[0]}">
+                            </div>
+                            <p class="offset-md-3">[[${product.getProductDto().getName()}]]</p>
+                        </div>
+                    </td>
+                    <td class="priceCart" th:value="${product.getProductDto().getPrice()}" th:text="${product.getProductDto().getPrice()}"></td>
+                    <td>
+                        <div class="cart-item-info much">
+                            <a href="#" th:value="${product.getProductDto().getId()}" class="minus">-</a>
+                            <input disabled="true" type="text" th:value="${product.getCount()}" class="input1">
+                            <a href="#" th:value="${product.getProductDto().getId()}" class="plus">+</a>
+                        </div>
+                    </td>
+                    <td class="itog" th:text="${product.getCount() * product.getProductDto().getPrice()}"></td>
+                    <td>
+                        <div class="row">
+                            <button th:value="${product.getProductDto().getId()}" class="delCart btn btn-danger">Удалить из корзины</button>
+                        </div>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col offset-md-8">
+                <h4 style="color:black;" class="allPrice"></h4>
+            </div>
+        </div>
+        <br>
+        <script type="text/javascript" th:inline="javascript">
+            $(".delCart").click(function () {
+                $(this).closest(".cart").remove();
+                delCart($(this).attr('value'));
+                updateAllPrice();
+            });
+            $(".minus").click(function ()
+            {
+                var much = +$(this).closest(".much").find("input").val();
+                var result = much;
+                if (much - 1 > 0){
+                    result = much - 1;
+                    $(this).closest(".much").find("input").val(result);
+                    updateCarts(result, $(this).attr('value'));
+                    $(this).closest(".much").closest(".cart").children(".itog").text(result * $(this).closest(".much").closest(".cart").children(".priceCart").attr('value'));
+                    updateAllPrice();
+                }
+            });
+            $(".plus").click(function ()
+            {
+                var much = +$(this).closest(".much").find("input").val();
+                var result = much + 1;
+                $(this).closest(".much").find("input").val(result);
+                updateCarts(result, $(this).attr('value'));
+                $(this).closest(".much").closest(".cart").children(".itog").text(result * $(this).closest(".much").closest(".cart").children(".priceCart").attr('value'));
+                updateAllPrice();
+            });
+            function delCart(id) {
+                let data = {
+                    id : id
+                }
+                let options = {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    credentials: "same-origin"
+                };
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    'type': 'POST',
+                    'url': '/cart/delCart',
+                    'data': JSON.stringify(data),
+                    'dataType': 'json'
+                });
+            }
+            function updateCarts(count, id) {
+                let data = {
+                    count: count,
+                    id : id
+                };
+                let options = {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    credentials: "same-origin"
+                };
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    'type': 'POST',
+                    'url': '/cart/updateCart',
+                    'data': JSON.stringify(data),
+                    'dataType': 'json',
+                    'success': function (s) {
+                    }
+                });
+            }
+            $(document).ready(function() {
+                updateAllPrice();
+            });
+            function updateAllPrice() {
+                var priceList = $(".itog");
+                var total = priceList.length;
+                var summ = 0;
+                priceList.each(function () {
+                    summ += parseInt($(this).text());
+                })
+                $(".allPrice").text("Общая сумма:" + summ);
+            }
+        </script>
+    </div>
+</body>
+</html>

@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProductRepository extends PagingAndSortingRepository<Product, Integer> {
     List<Product> findAllByType(String type, Pageable pageable);
     List<Product> findAllByNameIgnoreCaseIsContaining(String query, Pageable pageable);
+    List<Product> findAllByTypeIn(List<String> types, Pageable pageable);
 }

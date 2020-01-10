@@ -1,74 +1,85 @@
-package com.tripplea.laikatoys.Cart.controller;
+package com.tripplea.laikatoys.Cart.Controller;
 
-import com.tripplea.laikatoys.Cart.model.Cart;
-import com.tripplea.laikatoys.Cart.model.ProductCartDto;
-import com.tripplea.laikatoys.Cart.service.CartService;
+import com.tripplea.laikatoys.Cart.Model.CountCartInfo;
+import com.tripplea.laikatoys.Cart.Model.ProductCartDto;
+import com.tripplea.laikatoys.Cart.Model.ProductSession;
 import com.tripplea.laikatoys.product.model.ProductDto;
 import com.tripplea.laikatoys.user.model.User;
 import com.tripplea.laikatoys.user.service.UserServices;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.awt.image.AreaAveragingScaleFilter;
+import java.util.*;
 
-@RestController
+@Controller
 @SessionAttributes("cart")
 @RequestMapping("/cart")
 public class CartRestController {
 
-    private final UserServices userServices;
-    private final CartService cartService;
-
-    public CartRestController(UserServices userServices, CartService cartService) {
-        this.userServices = userServices;
-        this.cartService = cartService;
+    @ModelAttribute("cart")
+    public ProductSession addStuffToRequestScope() {
+        return new ProductSession();
     }
 
-    @ModelAttribute("cart")
-    public Cart addStuffToRequestScope() {
-        return new Cart(new HashMap<>(), "");
+    @PostMapping("/updateCart")
+    @ResponseBody
+    public ResponseEntity<String> updateCarts(@RequestBody CountCartInfo countCartInfo, @ModelAttribute("cart") ProductSession cartSession, HttpSession session){
+        for (ProductCartDto pcd : cartSession.getProducts()) {
+            if (pcd.getProductDto().getId() == countCartInfo.id){
+                pcd.setCount(countCartInfo.count);
+                break;
+            }
+        }
+        session.setAttribute("cart", cartSession);
+        return ResponseEntity.ok(cartSession.toString());
     }
 
     @PostMapping("/add")
     @ResponseBody
-    public ResponseEntity<String> addProduct(@RequestBody ProductCartDto productCartDto, @ModelAttribute("cart") Cart cartSession, @AuthenticationPrincipal User authUser, HttpSession session) {
-        if (authUser == null) {
-            Set<ProductCartDto> buf = cartSession.getProductCarts();
-            if (buf.contains(productCartDto)) {
-                productCartDto.setCount();
-                buf.remove(productCartDto);
-                buf.add()
+    public ResponseEntity<String> addProduct(@RequestBody ProductCartDto productCartDto, @ModelAttribute("cart") ProductSession cartSession, HttpSession session) {
+        ArrayList<ProductCartDto> buf = cartSession.getProducts();
+        boolean isContains = false;
+        for (ProductCartDto pcd : cartSession.getProducts()) {
+            if (productCartDto.getProductDto().getId() == pcd.getProductDto().getId()){
+                isContains = true;
+                if (productCartDto.getCount() > 0)
+                    pcd = productCartDto;
             }
-            else
-                buf.put(productCartDto.getProductDto(), productCartDto.getCount() == null ? 1 : productCartDto.getCount());
-            cartSession.setProductCarts(buf);
-            session.setAttribute("cart", cartSession);
-            return ResponseEntity.ok(cartSession.toString());
-        } else {
-            Cart cartUser = authUser.getCart() == null ? new Cart(new HashMap<>(), "") : authUser.getCart();
-            Set<ProductCartDto> buf = cartUser.getProductCarts();
-            cartService.saveProductDto(productCartDto.getProductDto());
-            if (buf.containsKey(productCartDto.getProductDto()))
-                buf.replace(productCartDto.getProductDto(), buf.get(productCartDto.getProductDto()) + 1);
-            else
-                buf.put(productCartDto.getProductDto(), productCartDto.getCount() == null ? 1 : productCartDto.getCount());
-            cartUser.setProductCarts(buf);
-            cartService.save(cartUser);
-            authUser.setCart(cartUser);
-            userServices.save(authUser);
-            return ResponseEntity.ok(cartUser.toString());
         }
+        if (!isContains){
+            if (productCartDto.getCount() > 0) {
+                buf.add(productCartDto);
+            }
+        }
+        cartSession.setProducts(buf);
+        session.setAttribute("cart", cartSession);
+        return ResponseEntity.ok(cartSession.toString());
     }
 
-    @GetMapping
+    @PostMapping("/delCart")
     @ResponseBody
-    public ResponseEntity<String> getCart(@ModelAttribute("cart") Cart cartSession, @AuthenticationPrincipal User authUser) {
-        if (authUser == null)
-            return ResponseEntity.ok(cartSession.toString());
-        return ResponseEntity.ok(authUser.getCart().toString());
+    public ResponseEntity<String> delCart(@RequestBody CountCartInfo countCartInfo, @ModelAttribute("cart") ProductSession cartSession, HttpSession session){
+        for (ProductCartDto pcd : cartSession.getProducts()) {
+            if (pcd.getProductDto().getId() == countCartInfo.id){
+                cartSession.getProducts().remove(pcd);
+            }
+        }
+        session.setAttribute("cart", cartSession);
+        return ResponseEntity.ok(cartSession.toString());
+    }
+
+    @GetMapping("/show")
+    public String showCarts(Model model, HttpSession session){
+        List<ProductCartDto> buf = new ArrayList<ProductCartDto>();
+        if (session.getAttribute("cart") != null) {
+            buf = ((ProductSession) session.getAttribute("cart")).getProducts();
+        }
+        model.addAttribute("products", buf);
+        return "cart/showCards";
     }
 }

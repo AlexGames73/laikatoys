@@ -26,7 +26,8 @@ public class ProductDto {
     public ProductDto() {
     }
 
-    public ProductDto(String name, String type, String description, Integer price, List<String> imagesUris) {
+    public ProductDto(int id, String name, String type, String description, Integer price, List<String> imagesUris) {
+        this.id = id;
         this.name = name;
         this.type = type;
         this.description = description;

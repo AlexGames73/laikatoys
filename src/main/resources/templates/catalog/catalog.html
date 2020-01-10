@@ -1,40 +1,71 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="ru">
+<html lang="ru"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/default}">
 <head>
-    <title>Hello World!</title>
-    <script src="webjars/jquery/3.1.1/jquery.min.js"></script>
-</head>
-<body>
-    <div class="cart">
-        <p class="cart_totalCount">@</p>
-        <p class="cart_totalSum">@</p>
-        <a href="/user" type="button">Открыть корзину</a>
-    </div>
-    <th:block th:each="product, i : ${productDtos}">
-        <div style="background-color: #878787; max-width: 1000px; text-align: center; margin-left: auto; margin-right: auto" th:object="${product}">
-            <h2 th:text="*{type}"></h2>
-            <div style="text-align: left">
-                <div style="display: inline-block">
-                    <div style="height: 300px; width: 300px; margin: 1rem; display: inline-block">
-                        <th:block th:each="img : *{imagesUris}">
-                            <img src="#" th:src="${img}" alt="Avatar" style="height: 100%; width: 100%; object-fit: cover; display: inline-block"/>
-                        </th:block>
-                    </div>
-                    <h1 th:text="*{name}" style="margin: 1rem; display: inline-block"></h1>
-                </div>
-                <div style="display: inline-block; text-align: right">
-                    <h1 th:text="*{price}"></h1>
-                </div>
-            </div>
-            <h2 th:text="*{description}"></h2>
-            <button th:onclick="addProduct([[${i.index}]])">Add to cart</button>
-        </div>
-    </th:block>
-    <div th:each="page : ${#numbers.sequence(0, countPages - 1)}">
-        <button th:text="${page}" style="display: inline-block" th:onclick="window.location.href=[[@{'/catalog?p='+${page}}]]"></button>
-    </div>
+    <meta charset="UTF-8">
+    <title>Каталог</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script th:inline="javascript">
+        $(document).ready(function() {
+        });
+        $(function () {
+            let s = [[${filter.getStartPrice()}]];
+            let ss = [[${filter.getEndPrice()}]];
+            $("#filter__range").slider({
+                min: 0,
+                max: 20000,
+                values: [s, ss],
+                range: true,
+                stop: function(event, ui) {
+                    $("input#priceMin").val($("#filter__range").slider("values",0));
+                    $("input#priceMax").val($("#filter__range").slider("values",1));
 
+                    $('.price-range-min.value').html($("#filter__range").slider("values",0));
+                    $('.price-range-max.value').html($("#filter__range").slider("values",1));
+                },
+                slide: function(event, ui){
+                    $("input#priceMin").val($("#filter__range").slider("values",0));
+                    $("input#priceMax").val($("#filter__range").slider("values",1));
+
+                    $('.price-range-min.value').html($("#filter__range").slider("values",0));
+                    $('.price-range-max.value').html($("#filter__range").slider("values",1));
+                }
+            });
+
+            $("input#priceMin").on('change', function(){
+                var value1=$("input#priceMin").val();
+                var value2=$("input#priceMax").val();
+                if(parseInt(value1) > parseInt(value2)){
+                    value1 = value2;
+                    $("input#priceMin").val(value1);
+                    $('.price-range-min.value').html(value1);
+                }
+                $("#filter__range").slider("values", 0, value1);
+                $('.price-range-min.value').html(value1);
+            });
+
+            $("input#priceMax").on('change', function(){
+                var value1=$("input#priceMin").val();
+                var value2=$("input#priceMax").val();
+                if (value2 > 20000) { value2 = 20000; $("input#priceMax").val(35000)}
+                if(parseInt(value1) > parseInt(value2)){
+                    value2 = value1;
+                    $("input#priceMax").val(value2);
+                    $('.price-range-max.value').html(value2);
+                }
+                $("#filter__range").slider("values",1,value2);
+                $('.price-range-max.value').html(value2);
+            });
+
+            $('.ui-slider-handle:eq(0)').append('<span class="price-range-min value">' + $('#filter__range').slider('values', 0 ) + '</span>');
+            $('.ui-slider-handle:eq(1)').append('<span class="price-range-max value">' + $('#filter__range').slider('values', 1 ) + '</span>');
+        });
+    </script>
     <script type="text/javascript" th:inline="javascript">
         $(function () {
             $.ajax({
@@ -49,17 +80,10 @@
                 }
             });
         });
-        function updateCart(cart) {
-            let count = 0;
-            let price = 0;
-            for (let i = 0; i < cart.productCounts.length; i++) {
-                count += cart.productCounts[i];
-                price += cart.productNames[i].price * cart.productCounts[i];
-            }
-            $('.cart_totalCount').text(count);
-            $('.cart_totalSum').text(price);
-        }
-        function addProduct(productId) {
+        function addProduct(productId, obj) {
+            $(obj).attr("disabled", "true");
+            $(obj).text("Товар в корзине");
+            $(obj).attr("class", "btn btn-danger");
             let productDtos = [[${productDtos}]];
             let data = {
                 productDto: productDtos[productId],
@@ -84,6 +108,124 @@
                 }
             });
         }
+        function updateFilters() {
+            window.location.href = '/catalog?startPrice=' + $("#priceMin").val() + '&endPrice=' +$ ("#priceMax").val()
+                + '&isTransport=' + $("#transport").is(':checked') + '&isMebel=' +$ ("#mebel").is(':checked') + '&isKind=' +$ ("#child").is(':checked')
+                + '&isOther=' +$ ("#other").is(':checked');
+        }
     </script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="headerWordsImage" style="height: 200px;">
+                <h2 class="col-md-4 offset-md-4 text-center" style="letter-spacing:5px; margin-top:40px; font-weight: bolder; font-size: 50px; color: white">Laika Toys</h2>
+                <br>
+                <h5 class="col-md-4 offset-md-4 text-center" style="letter-spacing:3px; font-weight: bold; font-size: 20px; color: white">Каталог товаров</h5>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <a class="btn btn-primary" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter">
+                    Фильтр
+                </a>
+                <div class="collapse" id="collapseFilter" th:object="${filter}">
+                    <ul class="list-group">
+                        <li class="list-group-item centered">
+                            <div class="filter__block filter__block--slider">
+                                <h4>Цена</h4>
+                                <div class="filter__slider">
+                                    <div id="filter__range"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="filter__cost table">
+                                        <div class="table-cell">
+                                            от
+                                            <input id="priceMin" type="text" th:value="*{startPrice}">
+                                            до
+                                            <input id="priceMax" type="text" th:value="*{endPrice}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <h4>Тип изделия</h4>
+                            <div class="custom-control custom-switch">
+                                <input th:checked="${filter.isTransport()}" type="checkbox" class="custom-control-input" id="transport">
+                                <label class="custom-control-label" for="transport" th:text="Транспорт"></label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input th:checked="${filter.isMebel()}" type="checkbox" class="custom-control-input" id="mebel">
+                                <label class="custom-control-label" for="mebel">Мебель</label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input th:checked="${filter.isKind()}" type="checkbox" class="custom-control-input" id="child">
+                                <label class="custom-control-label" for="child">Для малышей</label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input th:checked="${filter.isOther()}" type="checkbox" class="custom-control-input" id="other">
+                                <label class="custom-control-label" for="other">Другое</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <button th:onclick="'javascript:updateFilters()'" class="btn btn-success col-md-10 offset-md-1">Применить</button>
+                        </li>
+                        <li class="list-group-item">
+                            <button class="btn btn-danger col-md-10 offset-md-1">Сбросить</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9 card-deck">
+                <th:block th:each="product, i : ${productDtos}">
+                    <div th:object="${product}" class="card" style="width: 18rem;">
+                        <div th:id="'carusel' + ${i.index}" class="carousel slide" data-interval="0" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <th:block th:each="img, index : *{imagesUris}">
+                                    <li th:data-target="'#carusel' + ${i.index}" th:data-slide-to="${index}" th:class="${index.index==0}? 'active'"></li>
+                                </th:block>
+                            </ol>
+                            <div class="carousel-inner">
+                                <th:block th:each="img, index : *{imagesUris}">
+                                    <div style="width: 100%; height: 200px;" th:class="${index.index==0}? 'carousel-item active' : 'carousel-item'">
+                                        <img style="width: 100%; height: 100%; object-fit: cover;" class="d-block w-100" th:src="${img}">
+                                    </div>
+                                </th:block>
+                            </div>
+                            <a class="carousel-control-prev" th:href="'#carusel' + ${i.index}" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" th:href="'#carusel' + ${i.index}" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-left" style="color: black" th:text="*{name}"></h5>
+                            <p style="color: black" class="card-text text-left" th:text="*{price} + ' руб'"></p>
+                            <div th:if="${haveIdCarts.contains(product.getId())}">
+                                <button disabled="true" class="btn btn-danger">Товар в корзине</button>
+                            </div>
+                            <div th:if="${!haveIdCarts.contains(product.getId())}">
+                                <button th:onclick="'javascript:addProduct(' + ${i.index} + ',' + 'this' + ')'" class="btn btn-primary">В корзину</button>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    <div th:each="page : ${#numbers.sequence(0, countPages - 1)}">
+        <button th:text="${page}" style="display: inline-block" th:onclick="window.location.href=[[@{'/catalog?p='+${page}}]]"></button>
+    </div>
+</div>
+
 </body>
 </html>
